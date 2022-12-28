@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node ./public/index.ts"
+    "dev": "ts-node ./src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -17,9 +17,12 @@
   },
   "homepage": "https://github.com/loGTve/Wang-Server#readme",
   "dependencies": {
+    "@fastify/postgres": "^5.2.0",
     "@types/node": "^18.11.17",
-    "cross-env": "^7.0.3",
+    "@types/pg": "^8.6.6",
     "dotenv": "^16.0.3",
-    "fastify": "^4.10.2"
+    "fastify": "^4.10.2",
+    "path": "^0.12.7",
+    "pg": "^8.8.0"
   }
 }
