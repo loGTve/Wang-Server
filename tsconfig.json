@@ -13,7 +13,7 @@
         "rootDir": "./",
         "allowJs": true,
         "resolveJsonModule": true,
-        "strictPropertyInitialization": false
+        "strictPropertyInitialization": false,
     },
     "exclude": [
         "node_modules"

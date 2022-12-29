@@ -1,52 +1,62 @@
-import fastify from 'fastify'
+import Fastify from 'fastify'
 import fastifyPostgres from '@fastify/postgres';
+import dotenv from 'dotenv';
+import * as path from 'path';
 
 
+//envPath config
+const envPath = process.env.NODE_ENV === "production"
+    ? path.join(__dirname, '../env/.env.production')
+    : path.join(__dirname, '../env/.env.development');
 
-const server = fastify()
+dotenv.config({path: envPath});
+
+
+const fastify = Fastify();
 
 
 //Show Status
-server.get('/status_page', async (req, reply) => {
+fastify.get('/status_page', async (req, reply) => {
     return {status: 200, message: "is Good"};
 });
 
 //Show Normal Html page
-server.get('/html', async (req, reply) => {
-    return
+fastify.get('/html', async (req, reply) => {
+    return webPage;
 });
 
 //Create account table
-server.post('/create_account', async (req, reply) => {
+fastify.post('/create_account', async (req, reply) => {
 
 });
+
 //SQL connect
-server.register(fastifyPostgres, {
+fastify.register(fastifyPostgres, {
     user: process.env.DATABASE_USER,
     host: process.env.DATABASE_HOST,
-    password: process.env.DATABASE_PASS,
+    password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
     port: 5432
 });
 
+
+
 //get Account Lists from account Table
-server.get('/get_account', async (req, reply) => {
-    const client = await server.pg.connect()
-    try {
-        const {rows} = await client.query(
+fastify.get('/get_account', async (req, reply) => {
+    return fastify.pg.transact(async client => {
+        const accountList = await client.query(
             'SELECT email, nickname FROM account'
         )
-        return rows
-    } finally {
-        client.release()
-    }
+        return accountList;
+    })
 });
 
 //Server Port, shown error
-server.listen({port: 8080}, (err, address) => {
+fastify.listen({port: 8080}, (err, address) => {
     if (err) {
         console.error(err)
         process.exit(1)
     }
     console.log(`Server listening at ${address}`)
-})
+
+});
