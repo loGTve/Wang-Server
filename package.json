@@ -18,9 +18,11 @@
   "homepage": "https://github.com/loGTve/Wang-Server#readme",
   "dependencies": {
     "@fastify/postgres": "^5.2.0",
+    "@fastify/static": "^6.6.0",
     "@types/node": "^18.11.17",
     "dotenv": "^16.0.3",
     "fastify": "^4.10.2",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "pg": "^8.8.0"
   }
 }

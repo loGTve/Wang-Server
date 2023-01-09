@@ -2,6 +2,9 @@ import Fastify from 'fastify'
 import fastifyPostgres from '@fastify/postgres';
 import dotenv from 'dotenv';
 import * as path from 'path';
+import fastifyStatic from "@fastify/static";
+
+
 
 
 //envPath config
@@ -14,6 +17,10 @@ dotenv.config({path: envPath});
 
 const fastify = Fastify();
 
+fastify.register(fastifyStatic, {
+    root: path.join(__dirname, '../public/'),
+    prefix: '/public/'
+})
 
 //Show Status
 fastify.get('/status_page', async (req, reply) => {
@@ -22,12 +29,12 @@ fastify.get('/status_page', async (req, reply) => {
 
 //Show Normal Html page
 fastify.get('/html', async (req, reply) => {
-    return webPage;
+    return reply.sendFile('index.html')
 });
 
 //Create account table
-fastify.post('/create_account', async (req, reply) => {
-
+fastify.post('/create_account', async (req, reply) =>{
+    return { hello: 'world' }
 });
 
 //SQL connect
@@ -39,9 +46,7 @@ fastify.register(fastifyPostgres, {
     port: 5432
 });
 
-
-
-//get Account Lists from account Table
+//get Account Lists from account Table !transact
 fastify.get('/get_account', async (req, reply) => {
     return fastify.pg.transact(async client => {
         const accountList = await client.query(
@@ -57,6 +62,5 @@ fastify.listen({port: 8080}, (err, address) => {
         console.error(err)
         process.exit(1)
     }
-    console.log(`Server listening at ${address}`)
-
+    console.log(`Server listening at ${address}`);
 });
