@@ -4,8 +4,11 @@ import dotenv from 'dotenv';
 import * as path from 'path';
 import fastifyStatic from "@fastify/static";
 
+import {emailInput, nicknameInput, passwordInput} from "./inputChange";
 
 
+console.log(emailInput);
+console.log(nicknameInput);
 
 //envPath config
 const envPath = process.env.NODE_ENV === "production"
@@ -14,28 +17,35 @@ const envPath = process.env.NODE_ENV === "production"
 
 dotenv.config({path: envPath});
 
-
+/** Fastify */
 const fastify = Fastify();
 
 fastify.register(fastifyStatic, {
     root: path.join(__dirname, '../public/'),
-    prefix: '/public/'
-})
+});
+
 
 //Show Status
 fastify.get('/status_page', async (req, reply) => {
-    return {status: 200, message: "is Good"};
+    return {status: 200, message: "is Good"}
 });
+
 
 //Show Normal Html page
 fastify.get('/html', async (req, reply) => {
     return reply.sendFile('index.html')
 });
 
+
 //Create account table
-fastify.post('/create_account', async (req, reply) =>{
-    return { hello: 'world' }
+fastify.get('/create_account', async (req, reply) => {
+    return reply.sendFile('register.html', path.join(__dirname, '../public/register'))
 });
+
+fastify.post('/register', async (req, reply) => {
+
+});
+
 
 //SQL connect
 fastify.register(fastifyPostgres, {
@@ -45,6 +55,7 @@ fastify.register(fastifyPostgres, {
     database: process.env.DATABASE_NAME,
     port: 5432
 });
+
 
 //get Account Lists from account Table !transact
 fastify.get('/get_account', async (req, reply) => {
@@ -56,6 +67,7 @@ fastify.get('/get_account', async (req, reply) => {
     })
 });
 
+
 //Server Port, shown error
 fastify.listen({port: 8080}, (err, address) => {
     if (err) {
@@ -64,3 +76,4 @@ fastify.listen({port: 8080}, (err, address) => {
     }
     console.log(`Server listening at ${address}`);
 });
+
