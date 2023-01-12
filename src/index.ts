@@ -7,6 +7,8 @@ import fastifyStatic from "@fastify/static";
 import {emailInput, nicknameInput, passwordInput} from "./inputChange";
 
 
+
+
 console.log(emailInput);
 console.log(nicknameInput);
 
