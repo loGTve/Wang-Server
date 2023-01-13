@@ -9,6 +9,8 @@ let emailInput;
 let passwordInput;
 let nicknameInput;
 
+console.log(document);
+
 if (typeof document !== 'undefined') {
     emailInput = document.getElementById('email');
     passwordInput = document.getElementById('password');
@@ -19,6 +21,6 @@ if (typeof document !== 'undefined') {
 
 
 /** Print What USER Inputed - emailInput, nicknameInput */
-const PrintTest = () => {
-    document.getElementById("varPrint").innerHTML = emailInput + nicknameInput;
+let PrintTest = () => {
+    document.getElementById("varPrint").innerHTML = emailInput.value + nicknameInput.value;
 }

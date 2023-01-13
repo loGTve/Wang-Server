@@ -4,13 +4,9 @@ import dotenv from 'dotenv';
 import * as path from 'path';
 import fastifyStatic from "@fastify/static";
 
-import {emailInput, nicknameInput, passwordInput} from "./inputChange";
 
 
 
-
-console.log(emailInput);
-console.log(nicknameInput);
 
 //envPath config
 const envPath = process.env.NODE_ENV === "production"
@@ -23,8 +19,9 @@ dotenv.config({path: envPath});
 const fastify = Fastify();
 
 fastify.register(fastifyStatic, {
-    root: path.join(__dirname, '../public/'),
+    root: path.join(__dirname, '../public'),
 });
+
 
 
 //Show Status
@@ -39,10 +36,11 @@ fastify.get('/html', async (req, reply) => {
 });
 
 
-//Create account table
+//Get Input Email, Name from User
 fastify.get('/create_account', async (req, reply) => {
-    return reply.sendFile('register.html', path.join(__dirname, '../public/register'))
+    return reply.sendFile('register/register.html')
 });
+
 
 fastify.post('/register', async (req, reply) => {
 
