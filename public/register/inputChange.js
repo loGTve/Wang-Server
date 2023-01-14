@@ -5,9 +5,9 @@
 * @returns 이메일, 비밀번호, 닉네임
 
 */
-let emailInput;
-let passwordInput;
-let nicknameInput;
+export let emailInput;
+export let passwordInput;
+export let nicknameInput;
 
 console.log(document);
 

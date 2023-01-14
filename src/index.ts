@@ -4,8 +4,7 @@ import dotenv from 'dotenv';
 import * as path from 'path';
 import fastifyStatic from "@fastify/static";
 
-
-
+import {emailInput, nicknameInput} from "../public/register/inputChange";
 
 
 //envPath config
@@ -42,8 +41,12 @@ fastify.get('/create_account', async (req, reply) => {
 });
 
 
-fastify.post('/register', async (req, reply) => {
-
+fastify.post('/register', (req, reply) => {
+    return fastify.pg.transact(async client => {
+        await client.query(
+                'INSERT INTO account(email, nickname) VALUES(emailInput, nicknameInput) '
+        )
+    })
 });
 
 
