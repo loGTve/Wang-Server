@@ -5,6 +5,7 @@ import * as path from 'path';
 import fastifyStatic from "@fastify/static";
 
 import {emailInput, nicknameInput} from "../public/register/inputChange";
+import {request} from "http";
 
 
 //envPath config
@@ -24,7 +25,7 @@ fastify.register(fastifyStatic, {
 
 
 //Show Status
-fastify.get('/status_page', async (req, reply) => {
+fastify.get('/status_page', async () => {
     return {status: 200, message: "is Good"}
 });
 
@@ -41,14 +42,16 @@ fastify.get('/create_account', async (req, reply) => {
 });
 
 
-fastify.post('/register', (req, reply) => {
+fastify.post('/register', async () => {
     return fastify.pg.transact(async client => {
-        await client.query(
-                `INSERT INTO account(email, nickname)
-                VALUES($1, $2)`
+        const id = await client.query(
+                `INSERT INTO account (info) VALUES (
+                '{"nickname": $1, "items": {"email": $2}}'`
         )
+        return id;
     })
 });
+
 
 
 //SQL connect
@@ -62,10 +65,11 @@ fastify.register(fastifyPostgres, {
 
 
 //get Account Lists from account Table !transact
-fastify.get('/get_account', async (req, reply) => {
+fastify.get('/get_account', async () => {
     return fastify.pg.transact(async client => {
         const accountList = await client.query(
-            'SELECT email, nickname FROM account'
+                `SELECT account_info -> 'nickname' AS nickname
+                FROM account;`
         )
         return accountList;
     })
