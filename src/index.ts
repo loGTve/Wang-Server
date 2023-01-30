@@ -44,11 +44,13 @@ fastify.get('/create_account', async (req, reply) => {
 
 fastify.post('/register', async () => {
     return fastify.pg.transact(async client => {
-        const id = await client.query(
-                `INSERT INTO account (info) VALUES (
-                '{"nickname": $1, "items": {"email": $2}}'`
-        )
-        return id;
+        try {
+            const id = await client.query(
+                    `INSERT INTO account (account_info) VALUES (
+                    '{"nickname": $1, "items": {"email": $2}}')`
+                )} catch (err) {
+            console.log(err)
+        }
     })
 });
 
