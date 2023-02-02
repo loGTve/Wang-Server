@@ -23,7 +23,6 @@ fastify.register(fastifyStatic, {
 });
 
 
-
 //Show Status
 fastify.get('/status_page', async () => {
     return {status: 200, message: "is Good"}
@@ -32,58 +31,60 @@ fastify.get('/status_page', async () => {
 
 //Show Normal Html page
 fastify.get('/html', async (req, reply) => {
-    return reply.sendFile('index.html')
+    return reply.sendFile('index.html');
 });
 
 
 //Get Input Email, Name from User
 fastify.get('/create_account', async (req, reply) => {
-    return reply.sendFile('register/register.html')
+    return reply.sendFile('register/register.html');
 });
 
 
-fastify.post('/register', async () => {
+fastify.post('/register', async (req, res) => {
     return fastify.pg.transact(async client => {
         try {
             const id = await client.query(
                     `INSERT INTO account (account_info) VALUES (
-                    '{"nickname": $1, "items": {"email": $2}}')`
-                )} catch (err) {
-            console.log(err)
+                    '{"nickname": $1, "items": {"email": $2}}')`, [req.body]
+                    )
+        console.log("Successfully Sended to Server");
+        } catch (err) {
+            console.log(err);
+            console.log(req.body);
+            process.exit(1);
         }
     })
 });
 
 
-
 //SQL connect
-fastify.register(fastifyPostgres, {
-    user: process.env.DATABASE_USER,
-    host: process.env.DATABASE_HOST,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME,
-    port: 5432
-});
+    fastify.register(fastifyPostgres, {
+        user: process.env.DATABASE_USER,
+        host: process.env.DATABASE_HOST,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME,
+        port: 5432
+    });
 
 
-//get Account Lists from account Table !transact
-fastify.get('/get_account', async () => {
-    return fastify.pg.transact(async client => {
-        const accountList = await client.query(
-                `SELECT account_info -> 'nickname' AS nickname
-                FROM account;`
-        )
-        return accountList;
-    })
-});
+    //get Account Lists from account Table !transact
+    fastify.get('/get_account', async () => {
+        return fastify.pg.transact(async client => {
+            const accountList = await client.query(
+                `SELECT account_info - > 'nickname' AS nickname
+                 FROM account;`
+            )
+            return accountList;
+        })
+    });
 
 
-//Server Port, shown error
-fastify.listen({port: 8080}, (err, address) => {
-    if (err) {
-        console.error(err)
-        process.exit(1)
-    }
-    console.log(`Server listening at ${address}`);
-});
-
+    //Server Port, shown error
+    fastify.listen({port: 8080}, (err, address) => {
+        if (err) {
+            console.error(err);
+            process.exit(1);
+        }
+        console.log(`Server listening at ${address}`);
+    });
