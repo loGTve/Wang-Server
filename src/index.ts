@@ -2,10 +2,23 @@ import Fastify from 'fastify'
 import fastifyPostgres from '@fastify/postgres';
 import dotenv from 'dotenv';
 import * as path from 'path';
-import fastifyStatic from "@fastify/static";
+import fastifyStatic from '@fastify/static';
+import fastJson from 'fast-json-stringify';
 
-import {emailInput, nicknameInput} from "../public/register/inputChange";
-import {request} from "http";
+/** JSON.Stringify */
+const stringify = fastJson({
+    type: 'object',
+    properties: {
+        nickname: {
+            type: 'string'
+        },
+        email: {
+            type: 'string'
+        }
+    }
+});
+
+
 
 
 //envPath config
@@ -40,22 +53,17 @@ fastify.get('/create_account', async (req, reply) => {
     return reply.sendFile('register/register.html');
 });
 
-
-fastify.post('/register', async (req, res) => {
+//Get JSON Response, INSERT column to SQL
+fastify.post('/register', async (req: any, rep) => {
     return fastify.pg.transact(async client => {
-        try {
             const id = await client.query(
-                    `INSERT INTO account (account_info) VALUES (
-                    '{"nickname": $1, "items": {"email": $2}}')`, [req.body]
+                    `INSERT INTO account(nickname, email)
+                    VALUES($1, $2)`, [req.body.nickname, req.body.email]
                     )
         console.log("Successfully Sended to Server");
-        } catch (err) {
-            console.log(err);
-            console.log(req.body);
-            process.exit(1);
-        }
     })
 });
+
 
 
 //SQL connect
@@ -72,8 +80,7 @@ fastify.post('/register', async (req, res) => {
     fastify.get('/get_account', async () => {
         return fastify.pg.transact(async client => {
             const accountList = await client.query(
-                `SELECT account_info - > 'nickname' AS nickname
-                 FROM account;`
+                `SELECT nickname, email FROM account`
             )
             return accountList;
         })

@@ -1,5 +1,6 @@
 --Create account Table
 CREATE TABLE IF NOT EXISTS account(
-    ID serial NOT NULL PRIMARY KEY,
-    account_Info json NOT NULL
+    id serial NOT NULL PRIMARY KEY,
+    nickname VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE
 );

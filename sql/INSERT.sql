@@ -1,8 +1,6 @@
 --Input Test Value to account Table
-INSERT INTO account (account_Info)
+INSERT INTO account (nickname, email)
 VALUES (
-    '{"nickname": "GTlove", "items": {"email": "GT@naver.com", "password": "pass123!"}}'
-),
-(
-    '{"nickname": "myNickName", "items": {"email": "myEmail@Email.com", "password": "myPassword"}}'
-)
+     'loGTve',
+     'loGTve@naver.com'
+) RETURNING nickname, email;
