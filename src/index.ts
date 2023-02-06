@@ -3,22 +3,6 @@ import fastifyPostgres from '@fastify/postgres';
 import dotenv from 'dotenv';
 import * as path from 'path';
 import fastifyStatic from '@fastify/static';
-import fastJson from 'fast-json-stringify';
-
-/** JSON.Stringify */
-const stringify = fastJson({
-    type: 'object',
-    properties: {
-        nickname: {
-            type: 'string'
-        },
-        email: {
-            type: 'string'
-        }
-    }
-});
-
-
 
 
 //envPath config
@@ -53,7 +37,7 @@ fastify.get('/create_account', async (req, reply) => {
     return reply.sendFile('register/register.html');
 });
 
-//Get JSON Response, INSERT column to SQL
+//Get JSON Response, INSERT to SQL
 fastify.post('/register', async (req: any, rep) => {
     return fastify.pg.transact(async client => {
             const id = await client.query(
